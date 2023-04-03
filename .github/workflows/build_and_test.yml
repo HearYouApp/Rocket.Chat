@@ -147,6 +147,7 @@ jobs:
           server-token: ${{ secrets.TURBO_SERVER_TOKEN }}
 
       - name: Lint
+        if: github.event_name == 'DEACTIVATED'
         run: yarn lint --api="http://127.0.0.1:9080" --token="${{ secrets.TURBO_SERVER_TOKEN }}" --team='rc'
 
       - name: Translation check

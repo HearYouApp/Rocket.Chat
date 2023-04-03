@@ -38,7 +38,7 @@ runs:
 
         LOWERCASE_REPOSITORY=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
 
-        IMAGE_NAME_BASE="ghcr.io/${LOWERCASE_REPOSITORY}/rocket.chat:${{ inputs.docker-tag }}"
+        IMAGE_NAME_BASE="${inputs.ACR_SERVER}/${LOWERCASE_REPOSITORY}/rocket.chat:${{ inputs.docker-tag }}"
 
         IMAGE_NAME="${IMAGE_NAME_BASE}.${{ inputs.release }}"
 
@@ -70,7 +70,7 @@ runs:
       if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'release' || github.ref == 'refs/heads/develop'
       uses: docker/login-action@v2
       with:
-        registry: ${{ secrets.ACR_SERVER }}
+        registry: ${{ inputs.ACR_SERVER }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
 

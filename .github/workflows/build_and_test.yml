@@ -634,7 +634,6 @@ jobs:
 
   deploy:
     runs-on: ubuntu-20.04
-    if: github.event_name == 'release' || github.ref == 'refs/heads/develop'
     needs: [test, test-ee, release-versions]
     if: github.event_name == 'DEACTIVATED'
 

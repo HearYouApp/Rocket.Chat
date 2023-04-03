@@ -7,27 +7,31 @@ FROM node:14.21.2-alpine3.16 as builder
 # APP_SRC_FOLDER is path the your app code relative to this Dockerfile
 # /opt/src is where app code is copied into the container
 # /opt/app is where app code is built within the container
-ENV APP_SRC_FOLDER=.
+ENV METEOR_VERSION=2.9.1 \
+    APP_SRC_FOLDER=.
+
+RUN echo "\n[*] Installing Meteor ${METEOR_VERSION} to ${HOME}"\
+&& curl https://install.meteor.com/?release=${METEOR_VERSION} | /bin/sh
 
 RUN mkdir -p /opt/app /opt/src
 
 WORKDIR /opt/src
 
-# Copy in NPM dependencies and install them
-COPY $APP_SRC_FOLDER/package*.json /opt/src/
-RUN echo '\n[*] Installing app NPM dependencies' \
-&& yarn
+COPY ./apps/meteor .
 
-# Copy app source into container and build
-COPY $APP_SRC_FOLDER /opt/src/
 RUN echo '\n[*] Building Meteor bundle' \
-&& yarn build:ci --directory /opt/app
+&& yarn build:ci --directory /opt/app/bundle
 
 # --- Stage 2: install server dependencies and run Node server ---
 
 FROM node:14.21.2-alpine3.16 as runner
 
+ENV METEOR_VERSION=2.9.1
+
 RUN apk add --no-cache ttf-dejavu
+
+RUN echo "\n[*] Installing Meteor ${METEOR_VERSION} to ${HOME}"\
+&& curl https://install.meteor.com/?release=${METEOR_VERSION} | /bin/sh
 
 COPY --from=builder /opt/app/bundle /opt/app/
 

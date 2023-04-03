@@ -213,12 +213,14 @@ jobs:
           root-dir: /tmp/build
           docker-tag: ${{ needs.release-versions.outputs.gh-docker-tag }}
           release: preview
+          ACR_SERVER: ${{ secrets.ACR_SERVER }}
           username: ${{ secrets.CR_USER }}
           password: ${{ secrets.CR_PAT }}
 
   test:
     runs-on: ubuntu-20.04
     needs: [build, release-versions]
+    if: github.event_name == 'DEACTIVATED'
 
     strategy:
       matrix:
@@ -420,6 +422,7 @@ jobs:
   test-ee:
     runs-on: ubuntu-20.04
     needs: [build, release-versions]
+    if: github.event_name == 'DEACTIVATED'
 
     strategy:
       matrix:
@@ -633,6 +636,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.event_name == 'release' || github.ref == 'refs/heads/develop'
     needs: [test, test-ee, release-versions]
+    if: github.event_name == 'DEACTIVATED'
 
     steps:
       - uses: actions/checkout@v3
@@ -711,6 +715,7 @@ jobs:
   docker-image-publish:
     runs-on: ubuntu-20.04
     needs: [deploy, build-docker-preview, release-versions]
+    if: github.event_name == 'DEACTIVATED'
 
     strategy:
       matrix:
@@ -792,6 +797,7 @@ jobs:
   services-docker-image-publish:
     runs-on: ubuntu-20.04
     needs: [deploy, release-versions]
+    if: github.event_name == 'DEACTIVATED'
 
     strategy:
       matrix:

@@ -45,14 +45,8 @@ runs:
         echo "Build Docker image ${IMAGE_NAME}"
 
         DOCKER_PATH="${GITHUB_WORKSPACE}/apps/meteor/.docker"
-        if [[ '${{ inputs.release }}' = 'preview' ]]; then
-          DOCKER_PATH="${DOCKER_PATH}-mongo"
-        fi;
 
         DOCKERFILE_PATH="${DOCKER_PATH}/Dockerfile"
-        if [[ '${{ inputs.release }}' = 'alpine' ]]; then
-          DOCKERFILE_PATH="${DOCKERFILE_PATH}.${{ inputs.release }}"
-        fi;
 
         echo "Copy Dockerfile for release: ${{ inputs.release }}"
         cp $DOCKERFILE_PATH ./Dockerfile
